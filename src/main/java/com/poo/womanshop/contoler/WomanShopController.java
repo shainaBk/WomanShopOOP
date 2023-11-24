@@ -112,4 +112,6 @@ public class WomanShopController implements Initializable {
         tf_pd_size.setText(null);
         tf_pd_size.setDisable(Objects.equals(cb_product_types.getValue(), "Accessories"));
     }
+
+    // TEST
 }
