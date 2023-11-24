@@ -8,6 +8,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class WomanShopApplication extends Application {
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(WomanShopApplication.class.getResource("hello-view.fxml"));
@@ -16,9 +20,5 @@ public class WomanShopApplication extends Application {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }
