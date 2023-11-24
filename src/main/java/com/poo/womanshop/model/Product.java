@@ -22,7 +22,6 @@ public abstract class Product implements Discount,Comparable<Product>{
     return id;
   }
 
-
   public String getName() {
     return name;
   }
@@ -40,8 +39,6 @@ public abstract class Product implements Discount,Comparable<Product>{
         this.price = price;
       } else throw new IllegalArgumentException("Price is negative");
     }
-
-
 
   public int getNbItems() {
     return nbItems;

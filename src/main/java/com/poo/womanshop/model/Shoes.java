@@ -12,7 +12,6 @@ public class Shoes extends Product {
   public int getShoeSize() {
     return shoeSize;
   }
-
   public void setShoeSize(int shoeSize) {
     this.shoeSize = shoeSize;
   }
@@ -23,7 +22,6 @@ public class Shoes extends Product {
             " shoeSize=" + shoeSize +
             '}';
   }
-
   @Override
   public void applyDiscount() {
     this.setPrice(this.getPrice()*(1-DISCOUNT_SHOES));

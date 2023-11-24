@@ -12,7 +12,6 @@ public class Clothes extends Product{
   public int getSize() {
     return size;
   }
-
   public void setSize(int size) throws IllegalArgumentException {
     if(size>=36 && size <=50){
       this.size = size;
