@@ -53,6 +53,7 @@ public class WomanShopController implements Initializable {
         //LOADING DATA PART
         try {
             Administrator admin = new Administrator(ProductLoader.loadProduct());
+
             //TODO: fix pb log info
             logger.info("----- CHARGEMENT RÉUSSI ------\nSOME INFO:\nList size: "+admin.getListProducts().size()
                     +"\nFirst elems:"+admin.getListProducts().getFirst().toString()
@@ -60,6 +61,7 @@ public class WomanShopController implements Initializable {
         } catch (SQLException e) {
             logger.error("ERREUR CHARGEMENT DES PRODUIT: ",e);
         }
+
 
         // Initialize the checkboxes: all of them are selected by default
         cb_clothes.setSelected(true);
