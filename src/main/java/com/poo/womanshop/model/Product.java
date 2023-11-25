@@ -2,6 +2,7 @@ package com.poo.womanshop.model;
 
 public abstract class Product implements Discount, Comparable<Product> {
 
+    //TODO: Reprendre Id dernier elem list de item
     static int nb = 0;
     static double income = 0;
     private final int id;
@@ -17,6 +18,13 @@ public abstract class Product implements Discount, Comparable<Product> {
         setPrice(price);
         this.nbItems = nbItems;
       }
+    public Product(int id,String name, double price, int nbItems) {
+        this.id=id;
+        this.name = name;
+        //this.price = price;
+        setPrice(price);
+        this.nbItems = nbItems;
+    }
 
       public int getId() {
         return id;

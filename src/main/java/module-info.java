@@ -5,6 +5,9 @@ module com.poo.womanshop {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
+    requires java.sql;
+    requires org.apache.logging.log4j;
+
 
     opens com.poo.womanshop to javafx.fxml;
     exports com.poo.womanshop;

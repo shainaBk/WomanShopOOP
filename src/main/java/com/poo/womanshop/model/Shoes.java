@@ -8,6 +8,10 @@ public class Shoes extends Product {
         super(name, price, nbItems);
         this.shoeSize = shoeSize;
     }
+    public Shoes(int id,String name, double price, int nbItems, int shoeSize) {
+        super(id, name, price, nbItems);
+        this.shoeSize = shoeSize;
+    }
   public int getShoeSize() {
     return shoeSize;
   }

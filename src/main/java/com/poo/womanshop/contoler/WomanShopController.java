@@ -1,9 +1,7 @@
 package com.poo.womanshop.contoler;
 
-import com.poo.womanshop.model.Accessories;
-import com.poo.womanshop.model.Clothes;
-import com.poo.womanshop.model.Product;
-import com.poo.womanshop.model.Shoes;
+import com.poo.womanshop.dao.ProductLoader;
+import com.poo.womanshop.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,8 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,8 +47,20 @@ public class WomanShopController implements Initializable {
     @FXML
     private TextField tf_pd_stock;
 
+    private static final Logger logger = LogManager.getLogger(WomanShopController.class);
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //LOADING DATA PART
+        try {
+            Administrator admin = new Administrator(ProductLoader.loadProduct());
+            //TODO: fix pb log info
+            logger.info("----- CHARGEMENT RÉUSSI ------\nSOME INFO:\nList size: "+admin.getListProducts().size()
+                    +"\nFirst elems:"+admin.getListProducts().getFirst().toString()
+                    +"\nLast elems:"+admin.getListProducts().getLast().toString());
+        } catch (SQLException e) {
+            logger.error("ERREUR CHARGEMENT DES PRODUIT: ",e);
+        }
+
         // Initialize the checkboxes: all of them are selected by default
         cb_clothes.setSelected(true);
         cb_shoes.setSelected(true);
