@@ -14,14 +14,12 @@ public abstract class Product implements Discount, Comparable<Product> {
       public Product(String name, double price, int nbItems) {
         this.id=++nb;
         this.name = name;
-        //this.price = price;
         setPrice(price);
         this.nbItems = nbItems;
       }
     public Product(int id,String name, double price, int nbItems) {
         this.id=id;
         this.name = name;
-        //this.price = price;
         setPrice(price);
         this.nbItems = nbItems;
     }

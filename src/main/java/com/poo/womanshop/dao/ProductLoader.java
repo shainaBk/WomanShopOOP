@@ -104,46 +104,41 @@ public class ProductLoader {
 
     //TODO: tester
     public static void addProduct(Product p) throws SQLException {
-        String sqlProduct = "INSERT INTO PRODUCT (type, name, price, nbItems) VALUES (?, ?, ?, ?)";
+        String sqlProduct = "INSERT INTO PRODUCT (id, type, name, price, nbItems) VALUES (?, ?, ?, ?, ?)";
         String sqlSpecific = null;
         PreparedStatement statementSpecific = null;
 
-        try (PreparedStatement statementProduct = CONNECTION.prepareStatement(sqlProduct, Statement.RETURN_GENERATED_KEYS)) {
-            statementProduct.setString(1, p.getClass().getSimpleName().toUpperCase());
-            statementProduct.setString(2, p.getName());
-            statementProduct.setDouble(3, p.getPrice());
-            statementProduct.setInt(4, p.getNbItems());
+        try (PreparedStatement statementProduct = CONNECTION.prepareStatement(sqlProduct)) {
+            statementProduct.setInt(1, p.getId()); // Ajoutez l'id ici
+            statementProduct.setString(2, p.getClass().getSimpleName().toUpperCase());
+            statementProduct.setString(3, p.getName());
+            statementProduct.setDouble(4, p.getPrice());
+            statementProduct.setInt(5, p.getNbItems());
             int affectedRows = statementProduct.executeUpdate();
 
             if (affectedRows == 0) {
                 throw new SQLException("Creating product failed, no rows affected.");
             }
 
-            try (ResultSet generatedKeys = statementProduct.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int productId = generatedKeys.getInt(1);
-                    if (p instanceof Clothes) {
-                        sqlSpecific = "INSERT INTO CLOTHES (id, size) VALUES (?, ?)";
-                        statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
-                        statementSpecific.setInt(1, productId);
-                        statementSpecific.setInt(2, ((Clothes) p).getSize());
-                    } else if (p instanceof Shoes) {
-                        sqlSpecific = "INSERT INTO SHOES (id, shoeSize) VALUES (?, ?)";
-                        statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
-                        statementSpecific.setInt(1, productId);
-                        statementSpecific.setInt(2, ((Shoes) p).getShoeSize());
-                    } else if (p instanceof Accessories) {
-                        sqlSpecific = "INSERT INTO ACCESSORIES (id) VALUES (?)";
-                        statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
-                        statementSpecific.setInt(1, productId);
-                    }
+            int productId = p.getId(); // Utilisez l'id fourni
+            if (p instanceof Clothes) {
+                sqlSpecific = "INSERT INTO CLOTHES (id, size) VALUES (?, ?)";
+                statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
+                statementSpecific.setInt(1, productId);
+                statementSpecific.setInt(2, ((Clothes) p).getSize());
+            } else if (p instanceof Shoes) {
+                sqlSpecific = "INSERT INTO SHOES (id, shoeSize) VALUES (?, ?)";
+                statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
+                statementSpecific.setInt(1, productId);
+                statementSpecific.setInt(2, ((Shoes) p).getShoeSize());
+            } else if (p instanceof Accessories) {
+                sqlSpecific = "INSERT INTO ACCESSORIES (id) VALUES (?)";
+                statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
+                statementSpecific.setInt(1, productId);
+            }
 
-                    if (statementSpecific != null) {
-                        statementSpecific.executeUpdate();
-                    }
-                } else {
-                    throw new SQLException("Creating product failed, no ID obtained.");
-                }
+            if (statementSpecific != null) {
+                statementSpecific.executeUpdate();
             }
         } finally {
             if (statementSpecific != null) {
@@ -151,6 +146,7 @@ public class ProductLoader {
             }
         }
     }
+
 
     public static void deleteProduct(int id) throws SQLException {
         String sql = "DELETE FROM PRODUCT WHERE id = ?";

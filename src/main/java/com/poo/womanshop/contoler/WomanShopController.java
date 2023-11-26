@@ -47,12 +47,14 @@ public class WomanShopController implements Initializable {
     @FXML
     private TextField tf_pd_stock;
 
+    private Administrator admin;
+
     private static final Logger logger = LogManager.getLogger(WomanShopController.class);
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //LOADING DATA PART
+        /**LOADING DATA PART**/
         try {
-            Administrator admin = new Administrator(ProductLoader.loadProduct());
+            admin = new Administrator(ProductLoader.loadProduct());
 
             //TODO: fix pb log info
             logger.info("----- CHARGEMENT RÉUSSI ------\nSOME INFO:\nList size: "+admin.getListProducts().size()
@@ -61,8 +63,9 @@ public class WomanShopController implements Initializable {
         } catch (SQLException e) {
             logger.error("ERREUR CHARGEMENT DES PRODUIT: ",e);
         }
+        System.out.println(admin.toString());
 
-
+        /**INIT VIEW PART**/
         // Initialize the checkboxes: all of them are selected by default
         cb_clothes.setSelected(true);
         cb_shoes.setSelected(true);
@@ -70,8 +73,8 @@ public class WomanShopController implements Initializable {
 
         // Initialize the different types of products
         List<String> productTypes = List.of("Clothes", "Shoes", "Accessories");
-        ObservableList<String> products = FXCollections.observableArrayList(productTypes);
-        cb_product_types.setItems(products);
+        ObservableList<String> productTypesList = FXCollections.observableArrayList(productTypes);
+        cb_product_types.setItems(productTypesList);
     }
 
     @FXML
@@ -97,28 +100,26 @@ public class WomanShopController implements Initializable {
             }
 
             Product product;
-            switch (productType) {
-                case "Clothes":
-                    product = new Clothes(name, price, stock, size);
-                    break;
-                case "Shoes":
-                    product = new Shoes(name, price, stock, size);
-                    break;
-                case "Accessories":
-                    product = new Accessories(name, price, stock);
-                    break;
-                default:
-                    System.out.println("Please select a product type");
-                    return;
+            if (productType.isEmpty()){
+                System.out.println("Please select a product type");
+                return;
+            }else{
+                product = admin.createProduct(productType,name,price,stock,size);
             }
 
-            products.add(product);
+            if (product != null) {
+                admin.addProduct(product); // Utiliser admin pour ajouter le produit
+            }
             products.forEach(System.out::println);
         } catch (NumberFormatException e) {
-            System.out.println("ERROR | Please enter a valid number");
+            logger.error("ERROR | Please enter a valid number");
         } catch (IllegalArgumentException e) {
-            System.out.println("ERROR | " + e.getMessage());
+            logger.error("ERROR | " + e.getMessage());
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        System.out.println(admin.toString());
     }
 
     @FXML
