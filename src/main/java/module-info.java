@@ -6,6 +6,8 @@ module com.poo.womanshop {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
 
+    opens com.poo.womanshop.model to javafx.base;
+
     opens com.poo.womanshop to javafx.fxml;
     exports com.poo.womanshop;
     exports com.poo.womanshop.contoler;
