@@ -134,6 +134,9 @@ public class WomanShopController implements Initializable {
                 updateEditMenu(selectedProduct);
             }
         });
+
+        //load product to table
+        tableProduct.setItems(admin.getListProducts());
     }
 
     private boolean validateField(TextField field, Predicate<String> validationRule) {
@@ -192,6 +195,7 @@ public class WomanShopController implements Initializable {
 
             if (product != null) {
                 admin.addProduct(product); // Utiliser admin pour ajouter le produit
+                tableProduct.refresh();
             }
         } catch (NumberFormatException e) {
             logger.error("ERROR | Please enter a valid number");
@@ -201,7 +205,7 @@ public class WomanShopController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(admin.toString());
+
     }
 
     @FXML
@@ -249,7 +253,7 @@ public class WomanShopController implements Initializable {
     }
 
     @FXML
-    private void editProduct() {
+    private void uptadeProduct() throws SQLException {
         if (selectedProduct != null) {
             String productType = cb_product_types.getValue();
 
@@ -266,9 +270,12 @@ public class WomanShopController implements Initializable {
 
             tableProduct.refresh();
             //TODO: update product in database & modify admin.updateProduct(selectedProduct) to adaptet to the new method
-            //admin.updateProduct(selectedProduct);
-            System.out.println("Product edited successfully: " + selectedProduct);
+            admin.updateProduct(selectedProduct);
+            logger.info("Product edited successfully: " + selectedProduct);
             clearMenu(true);
+        }
+        else{
+            logger.error("ERROR | Please select a product to edit.");
         }
     }
 

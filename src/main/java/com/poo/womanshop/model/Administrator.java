@@ -48,10 +48,14 @@ public class Administrator {
         ProductLoader.deleteProduct(id);
     }
     //TODO: TESTER
-    public  void updateProduct(Product pOld, Product p) throws SQLException {
+    public  void updateProduct(Product p) throws SQLException {
         //ON CONTROLER
-        int index = this.listProducts.indexOf(p);
-        this.listProducts.add(index,p);
+        for (int i = 0; i < listProducts.size(); i++) {
+            if (listProducts.get(i).getId() == p.getId()) {
+                listProducts.set(i, p);
+                break;
+            }
+        }
         //ON BDD
         ProductLoader.updateProduct(p);
     }

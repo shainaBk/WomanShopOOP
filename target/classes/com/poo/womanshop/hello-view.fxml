@@ -40,7 +40,7 @@
     <TextField fx:id="tf_pd_stock" layoutX="496.0" layoutY="340.0" prefWidth="150.0" promptText="Inital stock" />
     <TextField fx:id="tf_pd_size" layoutX="656.0" layoutY="340.0" prefWidth="150.0" promptText="Size" />
     <Button fx:id="btn_add" layoutX="816.0" layoutY="340.0" mnemonicParsing="false" onAction="#addProduct" text="Add" />
-    <Button fx:id="btn_edit" layoutX="868.0" layoutY="340.0" mnemonicParsing="false" onAction="#editProduct" text="Edit" />
+    <Button fx:id="btn_edit" layoutX="868.0" layoutY="340.0" mnemonicParsing="false" onAction="#uptadeProduct" text="Edit" />
     <Button fx:id="btn_delete" layoutX="920.0" layoutY="340.0" mnemonicParsing="false" text="Delete" />
     <Separator layoutY="375.0" prefHeight="8.0" prefWidth="1000.0" />
     <Separator layoutX="497.0" layoutY="380.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="2.0" />
