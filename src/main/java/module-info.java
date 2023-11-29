@@ -9,6 +9,8 @@ module com.poo.womanshop {
     requires org.apache.logging.log4j;
 
 
+    opens com.poo.womanshop.model to javafx.base;
+
     opens com.poo.womanshop to javafx.fxml;
     exports com.poo.womanshop;
     exports com.poo.womanshop.contoler;
