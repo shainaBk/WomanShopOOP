@@ -4,7 +4,7 @@ public abstract class Product implements Discount, Comparable<Product> {
 
     //TODO: Reprendre Id dernier elem list de item
     static int nb = 0;
-    static double income = 0;
+    private double incomes;
     private final int id;
     private String name;
     private double price;
@@ -16,12 +16,22 @@ public abstract class Product implements Discount, Comparable<Product> {
         this.name = name;
         setPrice(price);
         this.nbItems = nbItems;
+        this.incomes = 0;
       }
+
     public Product(int id,String name, double price, int nbItems) {
         this.id=id;
         this.name = name;
         setPrice(price);
         this.nbItems = nbItems;
+        this.incomes = 0;
+    }
+    public Product(int id,String name, double price, int nbItems, double incomes) {
+        this.id=id;
+        this.name = name;
+        setPrice(price);
+        this.nbItems = nbItems;
+        this.incomes = incomes;
     }
 
       public int getId() {
@@ -58,17 +68,21 @@ public abstract class Product implements Discount, Comparable<Product> {
         return nb;
       }
 
-      public static double getIncome() {
-        return income;
+      public double getIncomes() {
+        return incomes;
+      }
+      public void setIncomes(double incomes) {
+        this.incomes = incomes;
       }
       public void sell(int nbItems) throws IllegalArgumentException {
             if (nbItems < this.nbItems) {
                 this.setNbItems(this.nbItems - nbItems);
-                income += nbItems * this.price;
+                this.setIncomes(this.incomes + nbItems * this.price);
                 System.out.println("Sell OK");
             } else throw new IllegalArgumentException("Unavailable product");
         }
 
+        //TODO: SETTER
     public void purchase(int nbItems) throws IllegalArgumentException {
         if (nbItems > 0) {
             this.setNbItems(this.nbItems + nbItems);

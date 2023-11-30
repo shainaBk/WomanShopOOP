@@ -82,6 +82,9 @@ public class WomanShopController implements Initializable {
     private TableColumn<Product, Integer> cl_stock;
 
     @FXML
+    private TableColumn<Product, Integer> cl_incomes;
+
+    @FXML
     private TableView<Product> tableProduct;
 
     @Override
@@ -116,6 +119,7 @@ public class WomanShopController implements Initializable {
         cl_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         cl_price.setCellValueFactory(new PropertyValueFactory<>("price"));
         cl_stock.setCellValueFactory(new PropertyValueFactory<>("nbItems"));
+        cl_incomes.setCellValueFactory(new PropertyValueFactory<>("incomes"));
         cl_size.setCellValueFactory(cellData -> {
             Product product = cellData.getValue();
             if (product instanceof Shoes) {

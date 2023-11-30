@@ -26,12 +26,13 @@
     </Pane>
     <TableView fx:id="tableProduct" layoutX="16.0" layoutY="60.0" prefHeight="270.0" prefWidth="968.0">
         <columns>
-            <TableColumn fx:id="cl_id" prefWidth="160.0" text="ID" />
-            <TableColumn fx:id="cl_product" prefWidth="160.0" text="PRODUCT" />
-            <TableColumn fx:id="cl_name" prefWidth="160.0" text="NAME" />
-            <TableColumn fx:id="cl_price" prefWidth="160.0" text="PRICE" />
-            <TableColumn fx:id="cl_stock" prefWidth="160.0" text="STOCK" />
-            <TableColumn fx:id="cl_size" prefWidth="160.0" text="SIZE" />
+            <TableColumn fx:id="cl_id" prefWidth="126.0" text="ID" />
+            <TableColumn fx:id="cl_product" prefWidth="138.0" text="PRODUCT" />
+            <TableColumn fx:id="cl_name" prefWidth="145.0" text="NAME" />
+            <TableColumn fx:id="cl_price" prefWidth="138.0" text="PRICE" />
+            <TableColumn fx:id="cl_stock" prefWidth="137.0" text="STOCK" />
+            <TableColumn fx:id="cl_size" prefWidth="141.0" text="SIZE" />
+         <TableColumn fx:id="cl_incomes" prefWidth="151.0" text="INCOMES" />
         </columns>
     </TableView>
     <ComboBox fx:id="cb_product_types" layoutX="16.0" layoutY="340.0" onAction="#changeProductType" prefWidth="150.0" promptText="Product" />

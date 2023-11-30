@@ -9,11 +9,15 @@ import java.util.List;
 
 public class Administrator {
     private ObservableList<Product> listProducts;
+    private double totalSales;
     public Administrator(ObservableList<Product>list){
         this.listProducts = list;
+        this.totalSales = 0;
     }
     public ObservableList<Product> getListProducts(){return this.listProducts;}
     public void setListProducts(ObservableList<Product>p){this.listProducts=p;}
+    public double getTotalSales(){return this.totalSales;}
+    public void setTotalSales(double totalSales){this.totalSales=totalSales;}
 
     //TODO: TESTER
     public  void addProduct(Product p) throws SQLException {
@@ -22,7 +26,6 @@ public class Administrator {
         //ON BDD
         ProductLoader.addProduct(p);
     }
-
     //TODO: TESTER
     //Via Produit
     public  void deleteProduct(Product p) throws SQLException {
@@ -59,6 +62,13 @@ public class Administrator {
         //ON BDD
         ProductLoader.updateProduct(p);
     }
+    public void saleProduct(Product p,int nbItems) throws SQLException {
+        //ON CONTROLER
+        p.sell(nbItems);
+        this.setTotalSales(this.getTotalSales()+p.getPrice()*nbItems);
+        //ON BDD
+        ProductLoader.updateProduct(p);
+    }
 
     public Product createProduct(String productType,String name,double price,int stock, int size){
         Product product = null;
@@ -92,6 +102,7 @@ public class Administrator {
         }
         return product;
     }
+
 
     @Override
     public String toString() {

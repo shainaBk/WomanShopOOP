@@ -52,8 +52,9 @@ public class ProductLoader {
                 String name = resultSet.getString("name");
                 double price = resultSet.getDouble("price");
                 int nbItems = resultSet.getInt("nbItems");
+                double incomes = resultSet.getDouble("incomes");
 
-                Product product = createProduct(id, type, name, price, nbItems);
+                Product product = createProduct(id, type, name, price, nbItems, incomes);
                 products.add(product);
             }
             logger.info("DONE CREATION PRODUCT");
@@ -63,40 +64,40 @@ public class ProductLoader {
         return products;
     }
 
-    private static Product createProduct(int id, String type, String name, double price, int nbItems) throws SQLException {
+    private static Product createProduct(int id, String type, String name, double price, int nbItems, double incomes) throws SQLException {
         switch (type) {
             case "CLOTHES":
-                return loadClothes(id, name, price, nbItems);
+                return loadClothes(id, name, price, nbItems, incomes);
             case "SHOES":
-                return loadShoes(id, name, price, nbItems);
+                return loadShoes(id, name, price, nbItems, incomes);
             case "ACCESSORIES":
-                return new Accessories(id, name, price, nbItems);
+                return new Accessories(id, name, price, nbItems, incomes);
             default:
                 throw new IllegalArgumentException("Unknown product type: " + type);
         }
     }
 
-    private static Product loadShoes(int id, String name, double price, int nbItems) throws SQLException {
+    private static Product loadShoes(int id, String name, double price, int nbItems, double incomes) throws SQLException {
         String sql = "SELECT shoeSize FROM SHOES WHERE id = ?";
         try (PreparedStatement statement = CONNECTION.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 int shoeSize = resultSet.getInt("shoeSize");
-                return new Shoes(id, name, price, nbItems, shoeSize);
+                return new Shoes(id, name, price, nbItems, shoeSize, incomes);
             }
         }
         throw new SQLException("Shoes not found with id: " + id);
     }
 
-    private static Product loadClothes(int id, String name, double price, int nbItems) throws SQLException {
+    private static Product loadClothes(int id, String name, double price, int nbItems, double incomes) throws SQLException {
         String sql = "SELECT size FROM CLOTHES WHERE id = ?";
         try (PreparedStatement statement = CONNECTION.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 int size = resultSet.getInt("size");
-                return new Clothes(id, name, price, nbItems, size);
+                return new Clothes(id, name, price, nbItems, size, incomes);
             }
         }
         throw new SQLException("Clothes not found with id: " + id);
@@ -104,7 +105,7 @@ public class ProductLoader {
 
     //TODO: tester
     public static void addProduct(Product p) throws SQLException {
-        String sqlProduct = "INSERT INTO PRODUCT (id, type, name, price, nbItems) VALUES (?, ?, ?, ?, ?)";
+        String sqlProduct = "INSERT INTO PRODUCT (id, type, name, price, nbItems, incomes) VALUES (?, ?, ?, ?, ?,?)";
         String sqlSpecific = null;
         PreparedStatement statementSpecific = null;
 
@@ -114,6 +115,7 @@ public class ProductLoader {
             statementProduct.setString(3, p.getName());
             statementProduct.setDouble(4, p.getPrice());
             statementProduct.setInt(5, p.getNbItems());
+            statementProduct.setDouble(4, p.getIncomes());
             int affectedRows = statementProduct.executeUpdate();
 
             if (affectedRows == 0) {
@@ -162,14 +164,15 @@ public class ProductLoader {
 
     //TODO: tester
     public static void updateProduct(Product p) throws SQLException {
-        String sqlProduct = "UPDATE PRODUCT SET name = ?, price = ?, nbItems = ? WHERE id = ?";
+        String sqlProduct = "UPDATE PRODUCT SET name = ?, price = ?, nbItems = ?, incomes = ? WHERE id = ?";
         String sqlSpecific = null;
 
         try (PreparedStatement statementProduct = CONNECTION.prepareStatement(sqlProduct)) {
             statementProduct.setString(1, p.getName());
             statementProduct.setDouble(2, p.getPrice());
             statementProduct.setInt(3, p.getNbItems());
-            statementProduct.setInt(4, p.getId());
+            statementProduct.setDouble(4, p.getIncomes());
+            statementProduct.setInt(5, p.getId());
             int rowsUpdated = statementProduct.executeUpdate();
 
             if (rowsUpdated == 0) {
