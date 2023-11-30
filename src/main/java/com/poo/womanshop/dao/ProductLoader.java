@@ -1,25 +1,24 @@
 package com.poo.womanshop.dao;
+
+import com.poo.womanshop.model.Accessories;
 import com.poo.womanshop.model.Clothes;
 import com.poo.womanshop.model.Product;
-import com.poo.womanshop.model.Accessories;
 import com.poo.womanshop.model.Shoes;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-public class ProductLoader {
-    private static final Logger logger = LogManager.getLogger(ProductLoader.class);
-    private static String userName = "shaina";
-    private static String password = null;
-    private static  String ipServer = "34.155.192.152";
-    private static String url = "jdbc:mysql://"+ipServer+"/woman_shop_bdd";
 
-    private static Connection CONNECTION = null;
+import java.sql.*;
+
+public class ProductLoader {
+    final static String ipServer = "34.155.192.152";
+    private static final Logger logger = LogManager.getLogger(ProductLoader.class);
+    final private static String userName = "shaina";
+    final private static String password = null;
+    final private static String url = "jdbc:mysql://" + ipServer + "/woman_shop_bdd";
+
+    private static final Connection CONNECTION;
 
     static {
         try {
@@ -29,22 +28,32 @@ public class ProductLoader {
         }
     }
 
+    /**
+     * Method to connect to the database
+     *
+     * @return Connection
+     */
     private static Connection getConnection() throws SQLException {
-        Connection connection = null;
-        try{
-             connection = DriverManager.getConnection(url,userName,password);
-            logger.info("----- CONNECTION EFFECTUÉ -----");
-        }catch (SQLException e) {
-            logger.error("ERROR CONNECTION BDD: ",e);
+        try {
+            Connection connection = DriverManager.getConnection(url, userName, password);
+            logger.info("----- CONNECTION TO THE DATABASE SUCCESSFUL -----");
+            return connection;
+        } catch (SQLException e) {
+            logger.error("ERROR DURING CONNECTION TO THE DATABASE: ", e);
+            throw e;
         }
-        return connection;
     }
 
+    /**
+     * Method to load all products from the database
+     *
+     * @return ObservableList<Product>
+     */
     public static ObservableList<Product> loadProduct() throws SQLException {
         ObservableList<Product> products = FXCollections.observableArrayList();
         String sql = "SELECT * FROM PRODUCT";
 
-        try(PreparedStatement statement = CONNECTION.prepareStatement(sql)) {
+        try (PreparedStatement statement = CONNECTION.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -53,90 +62,100 @@ public class ProductLoader {
                 double price = resultSet.getDouble("price");
                 int nbItems = resultSet.getInt("nbItems");
                 double incomes = resultSet.getDouble("incomes");
+                double costs = resultSet.getDouble("costs");
 
-                Product product = createProduct(id, type, name, price, nbItems, incomes);
+                Product product = createProduct(id, type, name, price, nbItems, incomes, costs);
                 products.add(product);
             }
-            logger.info("DONE CREATION PRODUCT");
+            logger.info("----- PRODUCTS LOADED SUCCESSFULLY -----");
         } catch (SQLException e) {
-            logger.error("ERREUR PREPARATION DE REQUETE: ",e);
+            logger.error("ERROR DURING LOADING PRODUCTS: ", e);
+            throw e;
         }
         return products;
     }
 
-    private static Product createProduct(int id, String type, String name, double price, int nbItems, double incomes) throws SQLException {
-        switch (type) {
-            case "CLOTHES":
-                return loadClothes(id, name, price, nbItems, incomes);
-            case "SHOES":
-                return loadShoes(id, name, price, nbItems, incomes);
-            case "ACCESSORIES":
-                return new Accessories(id, name, price, nbItems, incomes);
-            default:
-                throw new IllegalArgumentException("Unknown product type: " + type);
-        }
+    private static Product createProduct(int id, String type, String name, double price, int nbItems, double incomes, double costs) throws SQLException {
+        return switch (type) {
+            case "CLOTHES" -> loadClothes(id, name, price, nbItems, incomes, costs);
+            case "SHOES" -> loadShoes(id, name, price, nbItems, incomes, costs);
+            case "ACCESSORIES" -> new Accessories(id, name, price, nbItems, incomes, costs);
+            default -> throw new IllegalArgumentException("Unknown product type: " + type);
+        };
     }
 
-    private static Product loadShoes(int id, String name, double price, int nbItems, double incomes) throws SQLException {
+    private static Product loadShoes(int id, String name, double price, int nbItems, double incomes, double costs) throws SQLException {
         String sql = "SELECT shoeSize FROM SHOES WHERE id = ?";
         try (PreparedStatement statement = CONNECTION.prepareStatement(sql)) {
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int shoeSize = resultSet.getInt("shoeSize");
-                return new Shoes(id, name, price, nbItems, shoeSize, incomes);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int shoeSize = resultSet.getInt("shoeSize");
+                    return new Shoes(id, name, price, nbItems, shoeSize, incomes, costs);
+                } else {
+                    throw new SQLException("Shoes not found with id: " + id);
+                }
             }
         }
-        throw new SQLException("Shoes not found with id: " + id);
     }
 
-    private static Product loadClothes(int id, String name, double price, int nbItems, double incomes) throws SQLException {
+    private static Product loadClothes(int id, String name, double price, int nbItems, double incomes, double costs) throws SQLException {
         String sql = "SELECT size FROM CLOTHES WHERE id = ?";
         try (PreparedStatement statement = CONNECTION.prepareStatement(sql)) {
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int size = resultSet.getInt("size");
-                return new Clothes(id, name, price, nbItems, size, incomes);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int size = resultSet.getInt("size");
+                    return new Clothes(id, name, price, nbItems, size, incomes, costs);
+                } else {
+                    throw new SQLException("Clothes not found with id: " + id);
+                }
             }
         }
-        throw new SQLException("Clothes not found with id: " + id);
     }
 
-    //TODO: tester
+    //TODO: test this method
     public static void addProduct(Product p) throws SQLException {
-        String sqlProduct = "INSERT INTO PRODUCT (id, type, name, price, nbItems, incomes) VALUES (?, ?, ?, ?, ?,?)";
-        String sqlSpecific = null;
+        String sqlProduct = "INSERT INTO PRODUCT (id, type, name, price, nbItems, incomes, costs) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlSpecific;
         PreparedStatement statementSpecific = null;
 
         try (PreparedStatement statementProduct = CONNECTION.prepareStatement(sqlProduct)) {
-            statementProduct.setInt(1, p.getId()); // Ajoutez l'id ici
+            statementProduct.setInt(1, p.getId());
             statementProduct.setString(2, p.getClass().getSimpleName().toUpperCase());
             statementProduct.setString(3, p.getName());
             statementProduct.setDouble(4, p.getPrice());
             statementProduct.setInt(5, p.getNbItems());
             statementProduct.setDouble(6, p.getIncomes());
-            int affectedRows = statementProduct.executeUpdate();
+            statementProduct.setDouble(7, p.getCosts());
 
+            int affectedRows = statementProduct.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating product failed, no rows affected.");
             }
 
-            int productId = p.getId(); // Utilisez l'id fourni
-            if (p instanceof Clothes) {
-                sqlSpecific = "INSERT INTO CLOTHES (id, size) VALUES (?, ?)";
-                statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
-                statementSpecific.setInt(1, productId);
-                statementSpecific.setInt(2, ((Clothes) p).getSize());
-            } else if (p instanceof Shoes) {
-                sqlSpecific = "INSERT INTO SHOES (id, shoeSize) VALUES (?, ?)";
-                statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
-                statementSpecific.setInt(1, productId);
-                statementSpecific.setInt(2, ((Shoes) p).getShoeSize());
-            } else if (p instanceof Accessories) {
-                sqlSpecific = "INSERT INTO ACCESSORIES (id) VALUES (?)";
-                statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
-                statementSpecific.setInt(1, productId);
+            int productId = p.getId();
+
+            switch (p) {
+                case Clothes clothes -> {
+                    sqlSpecific = "INSERT INTO CLOTHES (id, size) VALUES (?, ?)";
+                    statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
+                    statementSpecific.setInt(1, productId);
+                    statementSpecific.setInt(2, clothes.getSize());
+                }
+                case Shoes shoes -> {
+                    sqlSpecific = "INSERT INTO SHOES (id, shoeSize) VALUES (?, ?)";
+                    statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
+                    statementSpecific.setInt(1, productId);
+                    statementSpecific.setInt(2, shoes.getShoeSize());
+                }
+                case Accessories ignored -> {
+                    sqlSpecific = "INSERT INTO ACCESSORIES (id) VALUES (?)";
+                    statementSpecific = CONNECTION.prepareStatement(sqlSpecific);
+                    statementSpecific.setInt(1, productId);
+                }
+                default -> {
+                }
             }
 
             if (statementSpecific != null) {
@@ -162,9 +181,8 @@ public class ProductLoader {
         }
     }
 
-    //TODO: tester
     public static void updateProduct(Product p) throws SQLException {
-        String sqlProduct = "UPDATE PRODUCT SET name = ?, price = ?, nbItems = ?, incomes = ? WHERE id = ?";
+        String sqlProduct = "UPDATE PRODUCT SET name = ?, price = ?, nbItems = ?, incomes = ?, costs = ? WHERE id = ?";
         String sqlSpecific = null;
 
         try (PreparedStatement statementProduct = CONNECTION.prepareStatement(sqlProduct)) {
@@ -172,7 +190,8 @@ public class ProductLoader {
             statementProduct.setDouble(2, p.getPrice());
             statementProduct.setInt(3, p.getNbItems());
             statementProduct.setDouble(4, p.getIncomes());
-            statementProduct.setInt(5, p.getId());
+            statementProduct.setDouble(5, p.getCosts());
+            statementProduct.setInt(6, p.getId());
             int rowsUpdated = statementProduct.executeUpdate();
 
             if (rowsUpdated == 0) {
@@ -189,7 +208,7 @@ public class ProductLoader {
                 try (PreparedStatement statementSpecific = CONNECTION.prepareStatement(sqlSpecific)) {
                     if (p instanceof Clothes) {
                         statementSpecific.setInt(1, ((Clothes) p).getSize());
-                    } else if (p instanceof Shoes) {
+                    } else {
                         statementSpecific.setInt(1, ((Shoes) p).getShoeSize());
                     }
                     statementSpecific.setInt(2, p.getId());
@@ -198,5 +217,4 @@ public class ProductLoader {
             }
         }
     }
-
 }

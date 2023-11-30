@@ -8,12 +8,14 @@ public class Clothes extends Product {
         super(name, price, nbItems);
         setSize(size);
     }
-    public Clothes(int id,String name, double price, int nbItems, int size) {
+
+    public Clothes(int id, String name, double price, int nbItems, int size) {
         super(id, name, price, nbItems);
         setSize(size);
     }
-    public Clothes(int id,String name, double price, int nbItems, int size, double income) {
-        super(id,name, price, nbItems, income);
+
+    public Clothes(int id, String name, double price, int nbItems, int size, double income, double costs) {
+        super(id, name, price, nbItems, income, costs);
         setSize(size);
     }
 
@@ -29,14 +31,11 @@ public class Clothes extends Product {
 
     @Override
     public String toString() {
-        return "Clothes{" + super.toString() +
-                " size=" + size +
-                '}';
+        return "Clothes{" + super.toString() + " size=" + size + '}';
     }
 
     @Override
     public void applyDiscount() {
         this.setPrice(this.getPrice() * (1 - DISCOUNT_CLOTHES));
     }
-
 }
