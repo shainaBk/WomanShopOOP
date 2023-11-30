@@ -42,7 +42,7 @@
     <TextField fx:id="tf_pd_size" layoutX="656.0" layoutY="340.0" prefWidth="150.0" promptText="Size" />
     <Button fx:id="btn_add" layoutX="816.0" layoutY="340.0" mnemonicParsing="false" onAction="#addProduct" text="Add" />
     <Button fx:id="btn_edit" layoutX="868.0" layoutY="340.0" mnemonicParsing="false" onAction="#uptadeProduct" text="Edit" />
-    <Button fx:id="btn_delete" layoutX="920.0" layoutY="340.0" mnemonicParsing="false" text="Delete" />
+    <Button fx:id="btn_delete" layoutX="920.0" layoutY="340.0" mnemonicParsing="false" onAction="#deleteProduct" text="Delete" />
     <Separator layoutY="375.0" prefHeight="8.0" prefWidth="1000.0" />
     <Separator layoutX="497.0" layoutY="380.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="2.0" />
     <Button layoutX="16.0" layoutY="395.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="226.0" text="SELL">
@@ -55,14 +55,14 @@
             <Font size="20.0" />
         </font>
     </Button>
-    <Label layoutX="16.0" layoutY="458.0" text="Incomes:">
+    <Label layoutX="27.0" layoutY="458.0" text="Capital       :">
         <font>
-            <Font size="20.0" />
+            <Font size="16.0" />
         </font>
     </Label>
-    <TextField editable="false" layoutX="120.0" layoutY="451.0" prefHeight="38.0" prefWidth="364.0" text="1.000.000€">
+    <TextField fx:id="capital_field" editable="false" layoutX="110.0" layoutY="452.0" prefHeight="30.0" prefWidth="373.0" text="1.000.000 €">
         <font>
-            <Font size="20.0" />
+            <Font size="16.0" />
         </font>
     </TextField>
     <Label layoutX="516.0" layoutY="395.0" text="Clothes">
@@ -84,4 +84,24 @@
     </Label>
     <Slider blockIncrement="5.0" layoutX="630.0" layoutY="488.0" minorTickCount="5" prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
     <Button layoutX="516.0" layoutY="535.0" mnemonicParsing="false" prefWidth="468.0" text="Apply discount" />
+   <Label layoutX="24.0" layoutY="498.0" text="Incomes     :">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Label>
+   <TextField fx:id="incomes_field" editable="false" layoutX="110.0" layoutY="492.0" prefHeight="31.0" prefWidth="373.0" text="1.000.000 €">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </TextField>
+   <Label layoutX="20.0" layoutY="539.0" text="Global cost :">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Label>
+   <TextField fx:id="globalCost_field" editable="false" layoutX="110.0" layoutY="533.0" prefHeight="31.0" prefWidth="373.0" text="1.000.000 €">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </TextField>
 </AnchorPane>

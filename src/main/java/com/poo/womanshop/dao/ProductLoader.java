@@ -115,7 +115,7 @@ public class ProductLoader {
             statementProduct.setString(3, p.getName());
             statementProduct.setDouble(4, p.getPrice());
             statementProduct.setInt(5, p.getNbItems());
-            statementProduct.setDouble(4, p.getIncomes());
+            statementProduct.setDouble(6, p.getIncomes());
             int affectedRows = statementProduct.executeUpdate();
 
             if (affectedRows == 0) {

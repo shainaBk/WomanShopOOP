@@ -24,9 +24,9 @@ import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
 public class WomanShopController implements Initializable {
-
     private static final Logger logger = LogManager.getLogger(WomanShopController.class);
     //private final ObservableList<Product> productList = FXCollections.observableArrayList();
+    private static String EURO = " €";
     private Product selectedProduct;
     private Administrator admin;
     @FXML
@@ -85,6 +85,13 @@ public class WomanShopController implements Initializable {
     private TableColumn<Product, Integer> cl_incomes;
 
     @FXML
+    private TextField capital_field;
+    @FXML
+    private TextField incomes_field;
+    @FXML
+    private TextField globalCost_field;
+
+    @FXML
     private TableView<Product> tableProduct;
 
     @Override
@@ -92,7 +99,7 @@ public class WomanShopController implements Initializable {
         System.out.println("test");
         /**LOADING DATA PART**/
         try {
-            admin = new Administrator(ProductLoader.loadProduct());
+            admin = new Administrator(ProductLoader.loadProduct(),1000000);
             System.out.println("test");
         } catch (SQLException e) {
             logger.error("ERREUR CHARGEMENT DES PRODUIT: ", e);
@@ -100,20 +107,37 @@ public class WomanShopController implements Initializable {
 
         /**INIT VIEW PART**/
         // Initialize the checkboxes: all of them are selected by default
-        cb_clothes.setSelected(true);
-        cb_shoes.setSelected(true);
-        cb_accessories.setSelected(true);
+        this.initCheckBox();
 
         // Initialize the different types of products
-        List<String> productTypes = List.of("Clothes", "Shoes", "Accessories");
-        ObservableList<String> productTypesList = FXCollections.observableArrayList(productTypes);
-        cb_product_types.setItems(productTypesList);
+        this.initProductType();
 
         // Initialize buttons status
         //TODO: Put in loop
         clearMenu(true);
 
         // Initialize the table view
+        this.initTableView();
+
+        //load product to table
+        this.loadTable();
+
+        //init info admin
+        this.initInfoAdmin();
+    }
+
+    /**INIT VIEW PART**/
+    public void initCheckBox(){
+        cb_clothes.setSelected(true);
+        cb_shoes.setSelected(true);
+        cb_accessories.setSelected(true);
+    }
+    public void initProductType(){
+        List<String> productTypes = List.of("Clothes", "Shoes", "Accessories");
+        ObservableList<String> productTypesList = FXCollections.observableArrayList(productTypes);
+        cb_product_types.setItems(productTypesList);
+    }
+    public void initTableView(){
         cl_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         cl_product.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getClass().getSimpleName()));
         cl_name.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -138,11 +162,18 @@ public class WomanShopController implements Initializable {
                 updateEditMenu(selectedProduct);
             }
         });
-
-        //load product to table
+    }
+    public void initInfoAdmin(){
+        capital_field.textProperty().bind(admin.capitalProperty().asString("%.2f €"));
+        incomes_field.textProperty().bind(admin.totalIncomesProperty().asString("%.2f €"));
+        globalCost_field.textProperty().bind(admin.totalCostsProperty().asString("%.2f €"));
+    }
+    public void loadTable(){
         tableProduct.setItems(admin.getListProducts());
     }
+    /*************************/
 
+    /**VALIDATION PART**/
     private boolean validateField(TextField field, Predicate<String> validationRule) {
         String text = field.getText();
         if (!validationRule.test(text)) {
@@ -165,7 +196,98 @@ public class WomanShopController implements Initializable {
 
         return isValid;
     }
+    /*************************/
 
+    /**ACTION ON VIEW PART**/
+    @FXML
+    public void changeProductType() {
+        // Disable the size field if the product type is Accessories
+        tf_pd_name.setText(null);
+        tf_pd_name.setDisable(false);
+        tf_pd_price.setText(null);
+        tf_pd_price.setDisable(false);
+        tf_pd_stock.setText(null);
+        tf_pd_stock.setDisable(false);
+        tf_pd_size.setText(null);
+        tf_pd_size.setDisable(Objects.equals(cb_product_types.getValue(), "Accessories"));
+        // Remove the error class from the text fields
+        tf_pd_name.getStyleClass().removeAll("text-field-error");
+        tf_pd_price.getStyleClass().removeAll("text-field-error");
+        tf_pd_stock.getStyleClass().removeAll("text-field-error");
+        tf_pd_size.getStyleClass().removeAll("text-field-error");
+        // Activate the add button if all the fields are filled
+        btn_add.setDisable(false);
+    }
+    private void updateEditMenu(Product product) {
+        this.selectedProduct = product;
+        if (product != null) {
+            clearMenu(false);
+
+            tf_pd_name.setText(product.getName());
+            tf_pd_price.setText(String.valueOf(product.getPrice()));
+            tf_pd_stock.setText(String.valueOf(product.getNbItems()));
+            if (product instanceof Clothes) {
+                tf_pd_size.setText(String.valueOf(((Clothes) product).getSize()));
+            } else if (product instanceof Shoes) {
+                tf_pd_size.setText(String.valueOf(((Shoes) product).getShoeSize()));
+            } else {
+                tf_pd_size.setText("");
+            }
+
+            cb_product_types.setDisable(true);
+            tf_pd_name.setDisable(false);
+            tf_pd_price.setDisable(false);
+            btn_edit.setDisable(false);
+            btn_delete.setDisable(false);
+        }
+    }
+    private void clearMenu(Boolean clearSelectedProduct) {
+        cb_product_types.setDisable(false);
+        tf_pd_name.clear();
+        tf_pd_name.setDisable(true);
+        tf_pd_price.clear();
+        tf_pd_price.setDisable(true);
+        tf_pd_stock.clear();
+        tf_pd_stock.setDisable(true);
+        tf_pd_size.clear();
+        tf_pd_size.setDisable(true);
+        btn_add.setDisable(true);
+        btn_edit.setDisable(true);
+        btn_delete.setDisable(true);
+        if (clearSelectedProduct) {
+            selectedProduct = null;
+            tableProduct.getSelectionModel().clearSelection();
+        }
+    }
+    /**ACTION ON CONTROLLER PART**/
+    //WHEN CLICK ON EDIT BUTTON
+    @FXML
+    private void uptadeProduct() throws SQLException {
+        if (selectedProduct != null) {
+            String productType = cb_product_types.getValue();
+
+            if (!validateProductFields(productType)) {
+                System.out.println("ERROR | Please fill all the fields correctly.");
+                return;
+            }
+
+            String name = tf_pd_name.getText();
+            double price = Double.parseDouble(tf_pd_price.getText());
+
+            selectedProduct.setName(name);
+            selectedProduct.setPrice(price);
+
+            tableProduct.refresh();
+            //TODO: update product in database & modify admin.updateProduct(selectedProduct) to adaptet to the new method
+            admin.updateProduct(selectedProduct);
+            logger.info("Product edited successfully: " + selectedProduct);
+            clearMenu(true);
+        }
+        else{
+            logger.error("ERROR | Please select a product to edit.");
+        }
+    }
+    //WHEN CLICK ON ADD BUTTON
     @FXML
     public void addProduct() {
 
@@ -212,93 +334,19 @@ public class WomanShopController implements Initializable {
 
     }
 
+    //WHEN CLICK ON DELETE BUTTON
     @FXML
-    public void changeProductType() {
-        // Disable the size field if the product type is Accessories
-        tf_pd_name.setText(null);
-        tf_pd_name.setDisable(false);
-        tf_pd_price.setText(null);
-        tf_pd_price.setDisable(false);
-        tf_pd_stock.setText(null);
-        tf_pd_stock.setDisable(false);
-        tf_pd_size.setText(null);
-        tf_pd_size.setDisable(Objects.equals(cb_product_types.getValue(), "Accessories"));
-        // Remove the error class from the text fields
-        tf_pd_name.getStyleClass().removeAll("text-field-error");
-        tf_pd_price.getStyleClass().removeAll("text-field-error");
-        tf_pd_stock.getStyleClass().removeAll("text-field-error");
-        tf_pd_size.getStyleClass().removeAll("text-field-error");
-        // Activate the add button if all the fields are filled
-        btn_add.setDisable(false);
-    }
-
-    private void updateEditMenu(Product product) {
-        this.selectedProduct = product;
-        if (product != null) {
-            clearMenu(false);
-
-            tf_pd_name.setText(product.getName());
-            tf_pd_price.setText(String.valueOf(product.getPrice()));
-            tf_pd_stock.setText(String.valueOf(product.getNbItems()));
-            if (product instanceof Clothes) {
-                tf_pd_size.setText(String.valueOf(((Clothes) product).getSize()));
-            } else if (product instanceof Shoes) {
-                tf_pd_size.setText(String.valueOf(((Shoes) product).getShoeSize()));
-            } else {
-                tf_pd_size.setText("");
-            }
-
-            cb_product_types.setDisable(true);
-            tf_pd_name.setDisable(false);
-            tf_pd_price.setDisable(false);
-            btn_edit.setDisable(false);
-            btn_delete.setDisable(false);
-        }
-    }
-
-    @FXML
-    private void uptadeProduct() throws SQLException {
+    public void deleteProduct() throws SQLException {
         if (selectedProduct != null) {
-            String productType = cb_product_types.getValue();
-
-            if (!validateProductFields(productType)) {
-                System.out.println("ERROR | Please fill all the fields correctly.");
-                return;
-            }
-
-            String name = tf_pd_name.getText();
-            double price = Double.parseDouble(tf_pd_price.getText());
-
-            selectedProduct.setName(name);
-            selectedProduct.setPrice(price);
-
+            admin.deleteProduct(selectedProduct);
             tableProduct.refresh();
-            //TODO: update product in database & modify admin.updateProduct(selectedProduct) to adaptet to the new method
-            admin.updateProduct(selectedProduct);
-            logger.info("Product edited successfully: " + selectedProduct);
+            logger.info("Product deleted successfully: " + selectedProduct);
             clearMenu(true);
         }
         else{
-            logger.error("ERROR | Please select a product to edit.");
+            logger.error("ERROR | Please select a product to delete.");
         }
     }
 
-    private void clearMenu(Boolean clearSelectedProduct) {
-        cb_product_types.setDisable(false);
-        tf_pd_name.clear();
-        tf_pd_name.setDisable(true);
-        tf_pd_price.clear();
-        tf_pd_price.setDisable(true);
-        tf_pd_stock.clear();
-        tf_pd_stock.setDisable(true);
-        tf_pd_size.clear();
-        tf_pd_size.setDisable(true);
-        btn_add.setDisable(true);
-        btn_edit.setDisable(true);
-        btn_delete.setDisable(true);
-        if (clearSelectedProduct) {
-            selectedProduct = null;
-            tableProduct.getSelectionModel().clearSelection();
-        }
-    }
+
 }
