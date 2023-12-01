@@ -12,10 +12,10 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 
 public class ProductLoader {
-    final static String ipServer = "34.155.192.152";
+    final static String ipServer = "localhost:3306";
     private static final Logger logger = LogManager.getLogger(ProductLoader.class);
-    final private static String userName = "shaina";
-    final private static String password = null;
+    final private static String userName = "mathis";
+    final private static String password = "SqlConnection.123";
     final private static String url = "jdbc:mysql://" + ipServer + "/woman_shop_bdd";
 
     private static final Connection CONNECTION;

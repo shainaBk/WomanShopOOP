@@ -1,6 +1,7 @@
 package com.poo.womanshop.model;
 
 public class Accessories extends Product {
+    private static double DISCOUNT_ACCESSORIES = 0.0d;
 
     public Accessories(String name, double price, int nbItems) {
         super(name, price, nbItems);
@@ -12,6 +13,10 @@ public class Accessories extends Product {
 
     public Accessories(int id, String name, double price, int nbItems, double incomes, double costs) {
         super(id, name, price, nbItems, incomes, costs);
+    }
+
+    public static double setDiscountAccessories(double discount) {
+        return DISCOUNT_ACCESSORIES = discount;
     }
 
     @Override
