@@ -86,6 +86,12 @@ public class Administrator {
         ProductLoader.updateProduct(p); //ON BDD
     }
 
+    public void updateAllProducts() throws SQLException {
+        for (Product p : listProducts) {
+            ProductLoader.updateProduct(p);
+        }
+    }
+
     public void sellProduct(Product p, int nbItems) throws SQLException {
         if (p.getNbItems() < nbItems) throw new IllegalArgumentException("Not enough items in stock");
 
@@ -97,18 +103,13 @@ public class Administrator {
     }
 
     public void buyProduct(Product p, int nbItems) throws SQLException {
-        try {
-            if (this.getCapital() < p.getPrice() * nbItems)
-                throw new IllegalArgumentException("Not enough money");
+        if (this.getCapital() < p.getPrice() * nbItems) throw new IllegalArgumentException("Not enough money");
 
-            p.buy(nbItems);
-            this.setCapital(this.getCapital() - p.getPrice() * nbItems);
-            this.setTotalCosts(this.getTotalCosts() + p.getPrice() * nbItems);
-            this.updateProduct(p);
-            ProductLoader.updateProduct(p);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+        p.buy(nbItems);
+        this.setCapital(this.getCapital() - p.getPrice() * nbItems);
+        this.setTotalCosts(this.getTotalCosts() + p.getPrice() * nbItems);
+        this.updateProduct(p);
+        ProductLoader.updateProduct(p);
     }
 
     public Product createProduct(String productType, String name, double price, int stock, int size) {
@@ -124,5 +125,26 @@ public class Administrator {
     @Override
     public String toString() {
         return "List of product:\n" + listProducts.stream().map(Product::toString).collect(Collectors.joining("\n"));
+    }
+
+    public void applyDiscount(double discountCl, double discountSh, double discountAc) throws SQLException {
+        if (discountCl < 0 || discountCl > 1 || discountSh < 0 || discountSh > 1 || discountAc < 0 || discountAc > 1)
+            throw new IllegalArgumentException("Discount must be between 0 and 1");
+
+        if (discountCl == 1 || discountSh == 1 || discountAc == 1)
+            throw new IllegalArgumentException("Discount must be different from 1");
+
+        if (discountCl == 0 && discountSh == 0 && discountAc == 0)
+            throw new IllegalArgumentException("Discount must be different from 0");
+
+        for (Product p : this.listProducts) {
+            switch (p.getClass().getSimpleName()) {
+                case "Clothes" -> p.setPrice(p.getPrice() * (1 - discountCl));
+                case "Shoes" -> p.setPrice(p.getPrice() * (1 - discountSh));
+                case "Accessories" -> p.setPrice(p.getPrice() * (1 - discountAc));
+            }
+        }
+
+        updateAllProducts();
     }
 }

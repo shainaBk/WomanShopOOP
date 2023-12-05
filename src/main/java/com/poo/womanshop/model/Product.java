@@ -56,7 +56,7 @@ public abstract class Product implements Discount, Comparable<Product> {
 
     public void setPrice(double price) throws IllegalArgumentException {
         if (price >= 0) {
-            this.price = price;
+            this.price = Math.round(price * 100.0) / 100.0;
         } else throw new IllegalArgumentException("Price is negative");
     }
 

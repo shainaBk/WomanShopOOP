@@ -1,7 +1,7 @@
 package com.poo.womanshop.model;
 
 public class Shoes extends Product {
-
+    private static double DISCOUNT_SHOES = 0.20d;
     private final int shoeSize;
 
     public Shoes(String name, double price, int nbItems, int shoeSize) {
@@ -17,6 +17,10 @@ public class Shoes extends Product {
     public Shoes(int id, String name, double price, int nbItems, int shoeSize, double incomes, double costs) {
         super(id, name, price, nbItems, incomes, costs);
         this.shoeSize = shoeSize;
+    }
+
+    public static double setDiscountShoes(double discount) {
+        return DISCOUNT_SHOES = discount;
     }
 
     public int getShoeSize() {

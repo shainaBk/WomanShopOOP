@@ -97,6 +97,15 @@ public class WomanShopController implements Initializable {
     @FXML
     private TableView<Product> tableProduct;
 
+    @FXML
+    private Slider slider_clothes;
+
+    @FXML
+    private Slider slider_shoes;
+
+    @FXML
+    private Slider slider_accessories;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -372,6 +381,25 @@ public class WomanShopController implements Initializable {
                 throw new IllegalArgumentException("Please select a product to buy.");
             admin.buyProduct(selectedProduct, 1);
             tableProduct.refresh();
+        } catch (SQLException | IllegalArgumentException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void applyDiscount() {
+        try {
+            double discount_cl = slider_clothes.getValue() / 100;
+            double discount_sh = slider_shoes.getValue() / 100;
+            double discount_ac = slider_accessories.getValue() / 100;
+
+            admin.applyDiscount(discount_cl, discount_sh, discount_ac);
+            System.out.println("Discounts applied: cl=" + discount_cl + ", sh=" + discount_sh + ", ac=" + discount_ac);
+            tableProduct.refresh();
+
+            slider_clothes.setValue(0);
+            slider_shoes.setValue(0);
+            slider_accessories.setValue(0);
         } catch (SQLException | IllegalArgumentException e) {
             logger.error(e.getMessage());
         }

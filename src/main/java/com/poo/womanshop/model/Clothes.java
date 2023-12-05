@@ -2,6 +2,7 @@ package com.poo.womanshop.model;
 
 public class Clothes extends Product {
 
+    private static double DISCOUNT_CLOTHES = 0.0d;
     private int size;
 
     public Clothes(String name, double price, int nbItems, int size) {
@@ -17,6 +18,10 @@ public class Clothes extends Product {
     public Clothes(int id, String name, double price, int nbItems, int size, double income, double costs) {
         super(id, name, price, nbItems, income, costs);
         setSize(size);
+    }
+
+    public static double setDiscountClothes(double discount) {
+        return DISCOUNT_CLOTHES = discount;
     }
 
     public int getSize() {
