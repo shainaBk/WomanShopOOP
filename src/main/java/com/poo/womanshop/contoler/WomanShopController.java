@@ -26,6 +26,7 @@ public class WomanShopController implements Initializable {
     private static final Logger logger = LogManager.getLogger(WomanShopController.class);
     Alert a = new Alert(Alert.AlertType.NONE);
     private FilteredList<Product> filteredList;
+    private ObservableList<Discount> listDiscounts;
     private Product selectedProduct;
     private Administrator admin;
     @FXML
@@ -110,7 +111,11 @@ public class WomanShopController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             // Load the products from the database
-            admin = new Administrator(ProductLoader.loadProduct(), 100);
+            admin = new Administrator(
+                    ProductLoader.loadProduct(),
+                    ProductLoader.loadDiscount(),
+                    100
+            );
         } catch (SQLException e) {
             logger.error("ERROR WHILE LOADING PRODUCTS FROM DATABASE");
         }
@@ -119,6 +124,7 @@ public class WomanShopController implements Initializable {
         this.initProductType(); // Init product type on the combo box
         this.initTableView(); // Init table view
         this.initInfoAdmin(); // Init the info admin
+        this.initInfoDiscount(); // Init the info discount
 
         clearMenu(); // Clear the different fields
         this.loadTable(); // Load the data in the table view
@@ -193,6 +199,17 @@ public class WomanShopController implements Initializable {
         capital_field.textProperty().bind(admin.capitalProperty().asString("%.2f €"));
         incomes_field.textProperty().bind(admin.totalIncomesProperty().asString("%.2f €"));
         globalCost_field.textProperty().bind(admin.totalCostsProperty().asString("%.2f €"));
+    }
+
+    public void initInfoDiscount() {
+        listDiscounts = admin.getListDiscounts();
+        for (Discount d : listDiscounts) {
+            switch (d.getProductType()) {
+                case "CLOTHES" -> slider_clothes.setValue(d.getDiscountRate() * 100);
+                case "SHOES" -> slider_shoes.setValue(d.getDiscountRate() * 100);
+                case "ACCESSORIES" -> slider_accessories.setValue(d.getDiscountRate() * 100);
+            }
+        }
     }
 
     public void loadTable() {
@@ -403,10 +420,21 @@ public class WomanShopController implements Initializable {
             admin.applyDiscount(discount_cl, discount_sh, discount_ac);
             System.out.println("Discounts applied: cl=" + discount_cl + ", sh=" + discount_sh + ", ac=" + discount_ac);
             tableProduct.refresh();
+        } catch (SQLException | IllegalArgumentException e) {
+            handleError(e, Alert.AlertType.WARNING);
+        }
+    }
 
+    @FXML
+    public void revokeDiscount() {
+        try {
             slider_clothes.setValue(0);
             slider_shoes.setValue(0);
             slider_accessories.setValue(0);
+
+            admin.applyDiscount(0, 0, 0);
+            System.out.println("Discounts revoked");
+            tableProduct.refresh();
         } catch (SQLException | IllegalArgumentException e) {
             handleError(e, Alert.AlertType.WARNING);
         }

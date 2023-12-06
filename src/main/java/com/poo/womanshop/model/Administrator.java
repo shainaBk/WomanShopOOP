@@ -13,16 +13,26 @@ public class Administrator {
     private final DoubleProperty totalCosts = new SimpleDoubleProperty(); // Total of the price of bought products
     private final DoubleProperty capital = new SimpleDoubleProperty(); // Total of the price of sold products - Total of the price of bought products
     private final ObservableList<Product> listProducts;
+    private final ObservableList<Discount> listDiscounts;
 
-    public Administrator(ObservableList<Product> list, double initialCapital) {
-        this.listProducts = list;
-        this.totalIncomes.set(list.stream().mapToDouble(Product::getIncomes).sum());
-        this.totalCosts.set(list.stream().mapToDouble(Product::getCosts).sum());
+    public Administrator(
+            ObservableList<Product> listP,
+            ObservableList<Discount> listD,
+            double initialCapital
+    ) {
+        this.listProducts = listP;
+        this.listDiscounts = listD;
+        this.totalIncomes.set(listP.stream().mapToDouble(Product::getIncomes).sum());
+        this.totalCosts.set(listP.stream().mapToDouble(Product::getCosts).sum());
         this.capital.set(initialCapital + this.totalIncomes.get() - this.totalCosts.get());
     }
 
     public ObservableList<Product> getListProducts() {
         return this.listProducts;
+    }
+
+    public ObservableList<Discount> getListDiscounts() {
+        return this.listDiscounts;
     }
 
     public double getTotalIncomes() {
@@ -128,23 +138,48 @@ public class Administrator {
     }
 
     public void applyDiscount(double discountCl, double discountSh, double discountAc) throws SQLException {
-        if (discountCl < 0 || discountCl > 1 || discountSh < 0 || discountSh > 1 || discountAc < 0 || discountAc > 1)
-            throw new IllegalArgumentException("Discount must be between 0 and 1");
-
-        if (discountCl == 1 || discountSh == 1 || discountAc == 1)
-            throw new IllegalArgumentException("Discount must be different from 1");
-
-        if (discountCl == 0 && discountSh == 0 && discountAc == 0)
-            throw new IllegalArgumentException("Discount must be different from 0");
+        validateDiscount(discountCl);
+        validateDiscount(discountSh);
+        validateDiscount(discountAc);
 
         for (Product p : this.listProducts) {
+            double oldDiscountRate;
             switch (p.getClass().getSimpleName()) {
-                case "Clothes" -> p.setPrice(p.getPrice() * (1 - discountCl));
-                case "Shoes" -> p.setPrice(p.getPrice() * (1 - discountSh));
-                case "Accessories" -> p.setPrice(p.getPrice() * (1 - discountAc));
+                case "Clothes":
+                    oldDiscountRate = listDiscounts.get(0).getDiscountRate();
+                    listDiscounts.set(0, new Discount("CLOTHES", discountCl));
+                    break;
+                case "Shoes":
+                    oldDiscountRate = listDiscounts.get(1).getDiscountRate();
+                    listDiscounts.set(1, new Discount("SHOES", discountSh));
+                    break;
+                case "Accessories":
+                    oldDiscountRate = listDiscounts.get(2).getDiscountRate();
+                    listDiscounts.set(2, new Discount("ACCESSORIES", discountAc));
+                    break;
+                default:
+                    continue;
             }
+
+            ProductLoader.updateDiscount(listDiscounts);
+
+            double originalPrice = p.getPrice() / (1 - oldDiscountRate);
+
+            double newDiscountRate = switch (p.getClass().getSimpleName()) {
+                case "Clothes" -> discountCl;
+                case "Shoes" -> discountSh;
+                case "Accessories" -> discountAc;
+                default -> 0.0;
+            };
+            p.setPrice(originalPrice * (1 - newDiscountRate));
         }
 
         updateAllProducts();
+    }
+
+    private void validateDiscount(double discount) {
+        if (discount < 0 || discount >= 1) {
+            throw new IllegalArgumentException("Discount must be between 0% and 90%");
+        }
     }
 }

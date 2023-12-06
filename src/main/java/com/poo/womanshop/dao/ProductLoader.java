@@ -1,9 +1,6 @@
 package com.poo.womanshop.dao;
 
-import com.poo.womanshop.model.Accessories;
-import com.poo.womanshop.model.Clothes;
-import com.poo.womanshop.model.Product;
-import com.poo.womanshop.model.Shoes;
+import com.poo.womanshop.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
@@ -213,6 +210,42 @@ public class ProductLoader {
                     }
                     statementSpecific.setInt(2, p.getId());
                     statementSpecific.executeUpdate();
+                }
+            }
+        }
+    }
+
+    public static ObservableList<Discount> loadDiscount() throws SQLException {
+        ObservableList<Discount> discounts = FXCollections.observableArrayList();
+        String sql = "SELECT type, discount_rate FROM DISCOUNTS";
+
+        try (PreparedStatement statementDiscount = CONNECTION.prepareStatement(sql);
+             ResultSet resultSet = statementDiscount.executeQuery()) {
+
+            while (resultSet.next()) {
+                String productType = resultSet.getString("type");
+                double discountRate = resultSet.getDouble("discount_rate");
+                discounts.add(new Discount(productType, discountRate));
+            }
+        } catch (SQLException e) {
+            logger.error("ERROR DURING LOADING DISCOUNTS: ", e);
+            throw e;
+        }
+
+        return discounts;
+    }
+
+    public static void updateDiscount(ObservableList<Discount> discounts) throws SQLException {
+        String sqlDiscount = "UPDATE DISCOUNTS SET discount_rate = ? WHERE type = ?";
+
+        for (Discount discount : discounts) {
+            try (PreparedStatement statementDiscount = CONNECTION.prepareStatement(sqlDiscount)) {
+                statementDiscount.setDouble(1, discount.getDiscountRate());
+                statementDiscount.setString(2, discount.getProductType());
+                int rowsUpdated = statementDiscount.executeUpdate();
+
+                if (rowsUpdated == 0) {
+                    throw new SQLException("No discount found with product_type: " + discount.getProductType());
                 }
             }
         }

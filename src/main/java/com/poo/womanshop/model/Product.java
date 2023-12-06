@@ -1,6 +1,6 @@
 package com.poo.womanshop.model;
 
-public abstract class Product implements Discount, Comparable<Product> {
+public abstract class Product implements InterDiscount, Comparable<Product> {
     private static int nb_increment = 0;
 
     private final int id;

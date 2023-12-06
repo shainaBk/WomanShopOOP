@@ -85,7 +85,8 @@
         </font>
     </Label>
     <Slider fx:id="slider_accessories" layoutX="630.0" layoutY="488.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-    <Button fx:id="btn_discount" layoutX="516.0" layoutY="535.0" mnemonicParsing="false" onAction="#applyDiscount" prefWidth="468.0" text="Apply discount" />
+    <Button fx:id="btn_discount_add" layoutX="516.0" layoutY="535.0" mnemonicParsing="false" onAction="#applyDiscount" prefWidth="226.0" text="Apply discount" />
+   <Button fx:id="btn_discount_revoke" layoutX="758.0" layoutY="535.0" mnemonicParsing="false" onAction="#revokeDiscount" prefWidth="226.0" text="Revoke discount" />
     <Label layoutX="16.0" layoutY="498.0" text="Incomes">
         <font>
             <Font size="16.0" />
