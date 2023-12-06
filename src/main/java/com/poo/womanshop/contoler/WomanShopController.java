@@ -24,10 +24,10 @@ import java.util.function.Predicate;
 
 public class WomanShopController implements Initializable {
     private static final Logger logger = LogManager.getLogger(WomanShopController.class);
+    Alert a = new Alert(Alert.AlertType.NONE);
     private FilteredList<Product> filteredList;
     private Product selectedProduct;
     private Administrator admin;
-
     @FXML
     private CheckBox cb_accessories;
 
@@ -122,6 +122,13 @@ public class WomanShopController implements Initializable {
 
         clearMenu(); // Clear the different fields
         this.loadTable(); // Load the data in the table view
+    }
+
+    public void handleError(Exception e, Alert.AlertType type) {
+        a.setAlertType(type);
+        a.setContentText(e.getMessage());
+        a.show();
+        logger.error(e.getMessage());
     }
 
     /**
@@ -322,7 +329,7 @@ public class WomanShopController implements Initializable {
             admin.updateProduct(selectedProduct);
             clearMenu();
         } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            handleError(e, Alert.AlertType.ERROR);
         }
     }
 
@@ -345,7 +352,7 @@ public class WomanShopController implements Initializable {
                 tableProduct.refresh();
             }
         } catch (IllegalArgumentException | SQLException e) {
-            logger.error(e.getMessage());
+            handleError(e, Alert.AlertType.ERROR);
         }
     }
 
@@ -358,7 +365,7 @@ public class WomanShopController implements Initializable {
             clearMenu();
             tableProduct.refresh();
         } catch (SQLException | IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            handleError(e, Alert.AlertType.ERROR);
         }
     }
 
@@ -370,7 +377,7 @@ public class WomanShopController implements Initializable {
             admin.sellProduct(selectedProduct, 1);
             tableProduct.refresh();
         } catch (SQLException | IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            handleError(e, Alert.AlertType.ERROR);
         }
     }
 
@@ -382,7 +389,7 @@ public class WomanShopController implements Initializable {
             admin.buyProduct(selectedProduct, 1);
             tableProduct.refresh();
         } catch (SQLException | IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            handleError(e, Alert.AlertType.ERROR);
         }
     }
 
@@ -401,7 +408,7 @@ public class WomanShopController implements Initializable {
             slider_shoes.setValue(0);
             slider_accessories.setValue(0);
         } catch (SQLException | IllegalArgumentException e) {
-            logger.error(e.getMessage());
+            handleError(e, Alert.AlertType.WARNING);
         }
     }
 }
