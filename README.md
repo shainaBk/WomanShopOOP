@@ -1,5 +1,7 @@
 # JavaFX Project - Object-Oriented Programming & Java
 
+![Java_demo.gif](img/Java_demo.gif)
+
 This project is about to do the same exercise of Women's Store but with Graphical User Interface and MySQL Database for
 persisting data.
 
@@ -199,7 +201,7 @@ Here is the list of these improvements and their details:
 After testing our application with friends and family, we gathered some valuable feedback, including this suggestion.
 This task was accomplished quite easily by simply adding a label in Scene Builder.
 
-- [x]  Handle errors outside of the console
+- [x]  Handle errors outside the console
 
 Similarly, based on user testing feedback, we were advised not to display errors in the console (as they would not be
 visible to end-users) but to use error "popups" instead. Consequently, we created a function in the controller to handle
