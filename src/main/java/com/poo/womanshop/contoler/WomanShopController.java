@@ -26,9 +26,9 @@ public class WomanShopController implements Initializable {
     private static final Logger logger = LogManager.getLogger(WomanShopController.class);
     Alert a = new Alert(Alert.AlertType.NONE);
     private FilteredList<Product> filteredList;
-    private ObservableList<Discount> listDiscounts;
     private Product selectedProduct;
     private Administrator admin;
+
     @FXML
     private CheckBox cb_accessories;
 
@@ -110,24 +110,20 @@ public class WomanShopController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            // Load the products from the database
-            admin = new Administrator(
-                    ProductLoader.loadProduct(),
-                    ProductLoader.loadDiscount(),
-                    100
+            admin = new Administrator(ProductLoader.loadProduct(), ProductLoader.loadDiscount(), 20000
             );
         } catch (SQLException e) {
             logger.error("ERROR WHILE LOADING PRODUCTS FROM DATABASE");
         }
 
-        this.initCheckBox(); // Init check box: all selected by default
-        this.initProductType(); // Init product type on the combo box
-        this.initTableView(); // Init table view
-        this.initInfoAdmin(); // Init the info admin
-        this.initInfoDiscount(); // Init the info discount
+        this.initCheckBox();
+        this.initProductType();
+        this.initTableView();
+        this.initInfoAdmin();
+        this.initInfoDiscount();
 
-        clearMenu(); // Clear the different fields
-        this.loadTable(); // Load the data in the table view
+        clearMenu();
+        this.loadTable();
     }
 
     public void handleError(Exception e, Alert.AlertType type) {
@@ -137,9 +133,6 @@ public class WomanShopController implements Initializable {
         logger.error(e.getMessage());
     }
 
-    /**
-     * INIT VIEW PART
-     **/
     public void initCheckBox() {
         cb_clothes.setSelected(true);
         cb_shoes.setSelected(true);
@@ -202,7 +195,7 @@ public class WomanShopController implements Initializable {
     }
 
     public void initInfoDiscount() {
-        listDiscounts = admin.getListDiscounts();
+        ObservableList<Discount> listDiscounts = admin.getListDiscounts();
         for (Discount d : listDiscounts) {
             switch (d.getProductType()) {
                 case "CLOTHES" -> slider_clothes.setValue(d.getDiscountRate() * 100);
@@ -229,9 +222,6 @@ public class WomanShopController implements Initializable {
         }
     }
 
-    /**
-     * VALIDATION PART
-     **/
     private boolean validateField(TextField field, Predicate<String> validationRule) {
         String text = field.getText();
         if (text == null || !validationRule.test(text)) {

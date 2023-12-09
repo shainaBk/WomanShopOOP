@@ -33,10 +33,10 @@ public class ProductLoader {
     private static Connection getConnection() throws SQLException {
         try {
             Connection connection = DriverManager.getConnection(url, userName, password);
-            logger.info("----- CONNECTION TO THE DATABASE SUCCESSFUL -----");
+            logger.info("Connection to the database established successfully");
             return connection;
         } catch (SQLException e) {
-            logger.error("ERROR DURING CONNECTION TO THE DATABASE: ", e);
+            logger.error("Error during the connection to the database: ", e);
             throw e;
         }
     }
@@ -64,9 +64,9 @@ public class ProductLoader {
                 Product product = createProduct(id, type, name, price, nbItems, incomes, costs);
                 products.add(product);
             }
-            logger.info("----- PRODUCTS LOADED SUCCESSFULLY -----");
+            logger.info("Products loaded successfully");
         } catch (SQLException e) {
-            logger.error("ERROR DURING LOADING PRODUCTS: ", e);
+            logger.error("Error during loading products: ", e);
             throw e;
         }
         return products;
@@ -111,7 +111,6 @@ public class ProductLoader {
         }
     }
 
-    //TODO: test this method
     public static void addProduct(Product p) throws SQLException {
         String sqlProduct = "INSERT INTO PRODUCT (id, type, name, price, nbItems, incomes, costs) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlSpecific;

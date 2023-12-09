@@ -19,7 +19,7 @@ public class Administrator {
             ObservableList<Product> listP,
             ObservableList<Discount> listD,
             double initialCapital
-    ) {
+    ) throws SQLException {
         this.listProducts = listP;
         this.listDiscounts = listD;
         this.totalIncomes.set(listP.stream().mapToDouble(Product::getIncomes).sum());
