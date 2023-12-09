@@ -1,4 +1,4 @@
-package com.poo.womanshop.contoler;
+package com.poo.womanshop.controller;
 
 import com.poo.womanshop.dao.ProductLoader;
 import com.poo.womanshop.model.*;

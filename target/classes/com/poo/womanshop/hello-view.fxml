@@ -1,110 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="1000.0" stylesheets="@cssfile.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.womanshop.contoler.WomanShopController">
+<?import javafx.scene.text.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="580.0" prefWidth="1000.0" stylesheets="@cssfile.css"
+            xmlns="http://javafx.com/javafx/21" fx:controller="com.poo.womanshop.controller.WomanShopController">
     <Label layoutX="16.0" layoutY="16.0" prefHeight="30.0" prefWidth="242.0" text="SHOP MANAGEMENT">
         <font>
-            <Font name="System Bold" size="22.0" />
+            <Font name="System Bold" size="22.0"/>
         </font>
     </Label>
-   <Label layoutX="258.0" layoutY="26.0" text="Press ESC to deselect the current row." />
+    <Label layoutX="258.0" layoutY="26.0" text="Press ESC to deselect the current row."/>
     <Pane layoutX="500.0" layoutY="16.0" prefHeight="30.0" prefWidth="484.0">
-        <CheckBox fx:id="cb_clothes" layoutX="200.0" layoutY="6.25" mnemonicParsing="false" text="Clothes" />
-        <CheckBox fx:id="cb_shoes" layoutX="290.0" layoutY="6.25" mnemonicParsing="false" text="Shoes" />
-        <CheckBox fx:id="cb_accessories" layoutX="370.0" layoutY="6.25" mnemonicParsing="false" text="Accessories" />
+        <CheckBox fx:id="cb_clothes" layoutX="200.0" layoutY="6.25" mnemonicParsing="false" text="Clothes"/>
+        <CheckBox fx:id="cb_shoes" layoutX="290.0" layoutY="6.25" mnemonicParsing="false" text="Shoes"/>
+        <CheckBox fx:id="cb_accessories" layoutX="370.0" layoutY="6.25" mnemonicParsing="false" text="Accessories"/>
     </Pane>
     <TableView fx:id="tableProduct" layoutX="16.0" layoutY="60.0" prefHeight="270.0" prefWidth="968.0">
         <columns>
-            <TableColumn fx:id="cl_id" prefWidth="50.0" text="ID" />
-            <TableColumn fx:id="cl_product" prefWidth="130.0" text="PRODUCT" />
-            <TableColumn fx:id="cl_name" prefWidth="130.0" text="NAME" />
-            <TableColumn fx:id="cl_price" prefWidth="130.0" text="PRICE" />
-            <TableColumn fx:id="cl_stock" prefWidth="130.0" text="STOCK" />
-            <TableColumn fx:id="cl_size" prefWidth="130.0" text="SIZE" />
-            <TableColumn fx:id="cl_incomes" prefWidth="130.0" text="INCOMES" />
-         <TableColumn fx:id="cl_costs" prefWidth="130.0" text="COSTS" />
+            <TableColumn fx:id="cl_id" prefWidth="50.0" text="ID"/>
+            <TableColumn fx:id="cl_product" prefWidth="130.0" text="PRODUCT"/>
+            <TableColumn fx:id="cl_name" prefWidth="130.0" text="NAME"/>
+            <TableColumn fx:id="cl_price" prefWidth="130.0" text="PRICE"/>
+            <TableColumn fx:id="cl_stock" prefWidth="130.0" text="STOCK"/>
+            <TableColumn fx:id="cl_size" prefWidth="130.0" text="SIZE"/>
+            <TableColumn fx:id="cl_incomes" prefWidth="130.0" text="INCOMES"/>
+            <TableColumn fx:id="cl_costs" prefWidth="130.0" text="COSTS"/>
         </columns>
     </TableView>
-    <ComboBox fx:id="cb_product_types" layoutX="16.0" layoutY="340.0" onAction="#changeProductType" prefWidth="150.0" promptText="Product" />
-    <TextField fx:id="tf_pd_name" layoutX="176.0" layoutY="340.0" prefHeight="25.0" prefWidth="150.0" promptText="Name" />
-    <TextField fx:id="tf_pd_price" layoutX="336.0" layoutY="340.0" prefWidth="150.0" promptText="Price" />
-    <TextField fx:id="tf_pd_stock" layoutX="496.0" layoutY="340.0" prefWidth="150.0" promptText="Inital stock" />
-    <TextField fx:id="tf_pd_size" layoutX="656.0" layoutY="340.0" prefWidth="150.0" promptText="Size" />
-    <Button fx:id="btn_add" layoutX="816.0" layoutY="340.0" mnemonicParsing="false" onAction="#addProduct" text="Add" />
-    <Button fx:id="btn_edit" layoutX="868.0" layoutY="340.0" mnemonicParsing="false" onAction="#updateProduct" text="Edit" />
-    <Button fx:id="btn_delete" layoutX="920.0" layoutY="340.0" mnemonicParsing="false" onAction="#deleteProduct" text="Delete" />
-    <Separator layoutY="375.0" prefHeight="8.0" prefWidth="1000.0" />
-    <Separator layoutX="497.0" layoutY="380.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="2.0" />
-    <Button fx:id="btn_sell" layoutX="16.0" layoutY="395.0" mnemonicParsing="false" onAction="#sellProduct" prefHeight="41.0" prefWidth="226.0" text="SELL">
+    <ComboBox fx:id="cb_product_types" layoutX="16.0" layoutY="340.0" onAction="#changeProductType" prefWidth="150.0"
+              promptText="Product"/>
+    <TextField fx:id="tf_pd_name" layoutX="176.0" layoutY="340.0" prefHeight="25.0" prefWidth="150.0"
+               promptText="Name"/>
+    <TextField fx:id="tf_pd_price" layoutX="336.0" layoutY="340.0" prefWidth="150.0" promptText="Price"/>
+    <TextField fx:id="tf_pd_stock" layoutX="496.0" layoutY="340.0" prefWidth="150.0" promptText="Inital stock"/>
+    <TextField fx:id="tf_pd_size" layoutX="656.0" layoutY="340.0" prefWidth="150.0" promptText="Size"/>
+    <Button fx:id="btn_add" layoutX="816.0" layoutY="340.0" mnemonicParsing="false" onAction="#addProduct" text="Add"/>
+    <Button fx:id="btn_edit" layoutX="868.0" layoutY="340.0" mnemonicParsing="false" onAction="#updateProduct"
+            text="Edit"/>
+    <Button fx:id="btn_delete" layoutX="920.0" layoutY="340.0" mnemonicParsing="false" onAction="#deleteProduct"
+            text="Delete"/>
+    <Separator layoutY="375.0" prefHeight="8.0" prefWidth="1000.0"/>
+    <Separator layoutX="497.0" layoutY="380.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="2.0"/>
+    <Button fx:id="btn_sell" layoutX="16.0" layoutY="395.0" mnemonicParsing="false" onAction="#sellProduct"
+            prefHeight="41.0" prefWidth="226.0" text="SELL">
         <font>
-            <Font size="20.0" />
+            <Font size="20.0"/>
         </font>
     </Button>
-    <Button fx:id="btn_buy" layoutX="258.0" layoutY="395.0" mnemonicParsing="false" onAction="#buyProduct" prefHeight="41.0" prefWidth="226.0" text="BUY">
+    <Button fx:id="btn_buy" layoutX="258.0" layoutY="395.0" mnemonicParsing="false" onAction="#buyProduct"
+            prefHeight="41.0" prefWidth="226.0" text="BUY">
         <font>
-            <Font size="20.0" />
+            <Font size="20.0"/>
         </font>
     </Button>
     <Label layoutX="16.0" layoutY="458.0" text="Capital">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
     </Label>
-    <TextField fx:id="capital_field" editable="false" layoutX="110.0" layoutY="453.0" prefHeight="30.0" prefWidth="373.0" text="1.000.000 €">
+    <TextField fx:id="capital_field" editable="false" layoutX="110.0" layoutY="453.0" prefHeight="30.0"
+               prefWidth="373.0" text="1.000.000 €">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
     </TextField>
     <Label layoutX="516.0" layoutY="395.0" text="Clothes">
         <font>
-            <Font size="15.0" />
+            <Font size="15.0"/>
         </font>
     </Label>
-    <Slider fx:id="slider_clothes" cache="true" layoutX="630.0" layoutY="398.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+    <Slider fx:id="slider_clothes" cache="true" layoutX="630.0" layoutY="398.0" majorTickUnit="10.0" minorTickCount="0"
+            prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
     <Label layoutX="516.0" layoutY="440.0" text="Shoes">
         <font>
-            <Font size="15.0" />
+            <Font size="15.0"/>
         </font>
     </Label>
-    <Slider fx:id="slider_shoes" layoutX="630.0" layoutY="443.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+    <Slider fx:id="slider_shoes" layoutX="630.0" layoutY="443.0" majorTickUnit="10.0" minorTickCount="0"
+            prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
     <Label layoutX="516.0" layoutY="485.0" text="Accessories">
         <font>
-            <Font size="15.0" />
+            <Font size="15.0"/>
         </font>
     </Label>
-    <Slider fx:id="slider_accessories" layoutX="630.0" layoutY="488.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-    <Button fx:id="btn_discount_add" layoutX="516.0" layoutY="535.0" mnemonicParsing="false" onAction="#applyDiscount" prefWidth="226.0" text="Apply discount" />
-   <Button fx:id="btn_discount_revoke" layoutX="758.0" layoutY="535.0" mnemonicParsing="false" onAction="#revokeDiscount" prefWidth="226.0" text="Revoke discount" />
+    <Slider fx:id="slider_accessories" layoutX="630.0" layoutY="488.0" majorTickUnit="10.0" minorTickCount="0"
+            prefHeight="33.0" prefWidth="354.0" showTickLabels="true" showTickMarks="true" snapToTicks="true"/>
+    <Button fx:id="btn_discount_add" layoutX="516.0" layoutY="535.0" mnemonicParsing="false" onAction="#applyDiscount"
+            prefWidth="226.0" text="Apply discount"/>
+    <Button fx:id="btn_discount_revoke" layoutX="758.0" layoutY="535.0" mnemonicParsing="false"
+            onAction="#revokeDiscount" prefWidth="226.0" text="Revoke discount"/>
     <Label layoutX="16.0" layoutY="498.0" text="Incomes">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
     </Label>
-    <TextField fx:id="incomes_field" editable="false" layoutX="110.0" layoutY="492.0" prefHeight="31.0" prefWidth="373.0" text="1.000.000 €">
+    <TextField fx:id="incomes_field" editable="false" layoutX="110.0" layoutY="492.0" prefHeight="31.0"
+               prefWidth="373.0" text="1.000.000 €">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
     </TextField>
     <Label layoutX="16.0" layoutY="539.0" text="Costs">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
     </Label>
-    <TextField fx:id="globalCost_field" editable="false" layoutX="110.0" layoutY="533.0" prefHeight="31.0" prefWidth="373.0" text="1.000.000 €">
+    <TextField fx:id="globalCost_field" editable="false" layoutX="110.0" layoutY="533.0" prefHeight="31.0"
+               prefWidth="373.0" text="1.000.000 €">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
     </TextField>
 </AnchorPane>

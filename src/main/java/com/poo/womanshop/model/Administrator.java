@@ -147,35 +147,40 @@ public class Administrator {
             switch (p.getClass().getSimpleName()) {
                 case "Clothes":
                     oldDiscountRate = listDiscounts.get(0).getDiscountRate();
-                    listDiscounts.set(0, new Discount("CLOTHES", discountCl));
                     break;
                 case "Shoes":
                     oldDiscountRate = listDiscounts.get(1).getDiscountRate();
-                    listDiscounts.set(1, new Discount("SHOES", discountSh));
                     break;
                 case "Accessories":
                     oldDiscountRate = listDiscounts.get(2).getDiscountRate();
-                    listDiscounts.set(2, new Discount("ACCESSORIES", discountAc));
                     break;
                 default:
                     continue;
             }
 
-            ProductLoader.updateDiscount(listDiscounts);
-
             double originalPrice = p.getPrice() / (1 - oldDiscountRate);
+            p.setPrice(originalPrice);
+        }
 
+        listDiscounts.set(0, new Discount("CLOTHES", discountCl));
+        listDiscounts.set(1, new Discount("SHOES", discountSh));
+        listDiscounts.set(2, new Discount("ACCESSORIES", discountAc));
+
+        for (Product p : this.listProducts) {
             double newDiscountRate = switch (p.getClass().getSimpleName()) {
                 case "Clothes" -> discountCl;
                 case "Shoes" -> discountSh;
                 case "Accessories" -> discountAc;
                 default -> 0.0;
             };
-            p.setPrice(originalPrice * (1 - newDiscountRate));
+            p.setPrice(p.getPrice() * (1 - newDiscountRate));
         }
+
+        ProductLoader.updateDiscount(listDiscounts);
 
         updateAllProducts();
     }
+
 
     private void validateDiscount(double discount) {
         if (discount < 0 || discount >= 1) {

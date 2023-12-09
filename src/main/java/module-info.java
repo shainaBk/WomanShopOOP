@@ -13,6 +13,6 @@ module com.poo.womanshop {
 
     opens com.poo.womanshop to javafx.fxml;
     exports com.poo.womanshop;
-    exports com.poo.womanshop.contoler;
-    opens com.poo.womanshop.contoler to javafx.fxml;
+    exports com.poo.womanshop.controller;
+    opens com.poo.womanshop.controller to javafx.fxml;
 }
