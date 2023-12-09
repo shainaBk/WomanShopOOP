@@ -7,6 +7,7 @@ module com.poo.womanshop {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires org.apache.logging.log4j;
+    requires java.dotenv;
 
 
     opens com.poo.womanshop.model to javafx.base;

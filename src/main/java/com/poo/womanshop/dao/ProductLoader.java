@@ -1,6 +1,7 @@
 package com.poo.womanshop.dao;
 
 import com.poo.womanshop.model.*;
+import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
@@ -9,11 +10,12 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 
 public class ProductLoader {
-    final static String ipServer = "localhost:3306";
     private static final Logger logger = LogManager.getLogger(ProductLoader.class);
-    final private static String userName = "mathis";
-    final private static String password = "SqlConnection.123";
-    final private static String url = "jdbc:mysql://" + ipServer + "/woman_shop_bdd";
+    private static final Dotenv dotenv = Dotenv.load();
+
+    final private static String userName = dotenv.get("DB_USERNAME");
+    final private static String password = dotenv.get("DB_PASSWORD");
+    final private static String url = dotenv.get("DB_URL");
 
     private static final Connection CONNECTION;
 
